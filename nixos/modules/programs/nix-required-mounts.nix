@@ -109,7 +109,6 @@ in
       { nix.settings.pre-build-hook = lib.getExe cfg.package; }
       (lib.mkIf cfg.presets.nvidia-gpu.enable {
   nix.settings.system-features = lib.mkMerge [
-    (mkDefault [])  # Ensure it exists
     nix.settings.system-features
     cfg.allowedPatterns.nvidia-gpu.onFeatures
   ];        programs.nix-required-mounts.allowedPatterns = {

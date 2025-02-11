@@ -108,8 +108,11 @@ in
     lib.mkMerge [
       { nix.settings.pre-build-hook = lib.getExe cfg.package; }
       (lib.mkIf cfg.presets.nvidia-gpu.enable {
-        nix.settings.system-features = nix.settings.system-features ++ cfg.allowedPatterns.nvidia-gpu.onFeatures;
-        programs.nix-required-mounts.allowedPatterns = {
+  nix.settings.system-features = lib.mkMerge [
+    (mkDefault [])  # Ensure it exists
+    nix.settings.system-features
+    cfg.allowedPatterns.nvidia-gpu.onFeatures
+  ];        programs.nix-required-mounts.allowedPatterns = {
           inherit (defaults) nvidia-gpu;
         };
       })

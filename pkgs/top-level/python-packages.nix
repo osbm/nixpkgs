@@ -18567,6 +18567,8 @@ self: super: with self; {
 
   tracing = callPackage ../development/python-modules/tracing { };
 
+  trackio = callPackage ../development/python-modules/trackio { };
+
   trackpy = callPackage ../development/python-modules/trackpy { };
 
   trafilatura = callPackage ../development/python-modules/trafilatura { };

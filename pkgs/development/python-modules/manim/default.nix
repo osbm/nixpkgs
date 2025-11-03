@@ -272,6 +272,51 @@ buildPythonPackage rec {
   ];
   versionCheckProgramArg = "--version";
 
+  preCheck = ''
+    # Debug the failing test
+    echo "=== Debugging test_manim_cfg_subcommand ==="
+    python -c "
+from manim import __version__
+from textwrap import dedent
+from click.testing import CliRunner
+from manim.__main__ import main
+
+# Show what the expected output would be
+expected_output = f'''Manim Community v{__version__}
+
+Usage: manim cfg [OPTIONS] COMMAND [ARGS]...
+
+  Manages Manim configuration files.
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  export
+  show
+  write
+
+Made with <3 by Manim Community developers.
+'''
+
+print('Expected output (raw):')
+print(repr(expected_output))
+print()
+print('Expected output (dedented):')
+print(repr(dedent(expected_output)))
+print()
+
+# Show what the actual CLI produces
+command = ['cfg']
+runner = CliRunner()
+result = runner.invoke(main, command, prog_name='manim')
+print('Actual CLI output:')
+print(repr(result.stdout))
+print()
+print('Are they equal?', dedent(expected_output) == result.stdout)
+    "
+  '';
+
   # about 55 of ~600 tests failing mostly due to demand for display
   disabledTests = import ./failing_tests.nix;
 

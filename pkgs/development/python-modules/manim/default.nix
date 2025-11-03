@@ -213,6 +213,12 @@ buildPythonPackage rec {
 
   patches = [ ./pytest-report-header.patch ];
 
+  postPatch = ''
+    # Add debug print to the failing test
+    sed -i '49i\    print("DEBUG expected:", repr(dedent(expected_output)))' tests/interface/test_commands.py
+    sed -i '50i\    print("DEBUG actual  :", repr(result.stdout))' tests/interface/test_commands.py
+  '';
+
   buildInputs = [ cairo ];
 
   dependencies = [
@@ -271,12 +277,6 @@ buildPythonPackage rec {
     versionCheckHook
   ];
   versionCheckProgramArg = "--version";
-
-  preCheck = ''
-    # Debug the failing test
-    echo "=== Debugging test_manim_cfg_subcommand ==="
-    manim cfg
-  '';
 
   # about 55 of ~600 tests failing mostly due to demand for display
   disabledTests = import ./failing_tests.nix;
